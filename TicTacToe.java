@@ -8,6 +8,7 @@ public class TicTacToe extends JFrame
     // Declare GUI elements and game variables
     private JLabel[] gameScores;
     private JButton[][] gameGrid;
+    private JLabel gameStatus;
     private String player, computer, currentPlayer;
     private int playerScore, computerScore;
 
@@ -29,6 +30,8 @@ public class TicTacToe extends JFrame
         scores.setLayout(new GridLayout(1, 2));
         JPanel grid = new JPanel();
         grid.setLayout(new GridLayout(3, 3));
+        JPanel status = new JPanel();
+        status.setLayout(new GridLayout(0, 1));
 
         // Setting up the scores panel and array
         gameScores = new JLabel[2];
@@ -53,15 +56,22 @@ public class TicTacToe extends JFrame
                         updateGrid(btn);
                     }
                 });
+
                 btn.setFont(new Font("Arial", Font.BOLD, 50));
                 gameGrid[i][j] = btn;
                 grid.add(gameGrid[i][j]);
             }
         }
 
+        // Setting up the status panel
+        gameStatus = new JLabel(currentPlayer + "'s turn", JLabel.CENTER);
+        status.add(gameStatus);
+
+
         // Setting up the frame
         this.add(scores, BorderLayout.NORTH);
         this.add(grid, BorderLayout.CENTER);
+        this.add(status, BorderLayout.SOUTH);
     }
 
     // Function to manage game state and logic
@@ -81,21 +91,25 @@ public class TicTacToe extends JFrame
                 if (gameGrid[i][0].getText() != " " && gameGrid[i][0].getText() == gameGrid[i][1].getText()
                     && gameGrid[i][0].getText() == gameGrid[i][2].getText()) {
                     endGame();
+                    return;
                 }
                 // Vertical checks
                 else if (gameGrid[0][i].getText() != " " && gameGrid[0][i].getText() == gameGrid[1][i].getText()
                     && gameGrid[0][i].getText() == gameGrid[2][i].getText()) {
                     endGame();
+                    return;
                 }
             }
             // Diagonal checks
             if (gameGrid[0][0].getText() != " " && gameGrid[0][0].getText() == gameGrid[1][1].getText()
                 && gameGrid[0][0].getText() == gameGrid[2][2].getText()) {
                 endGame();
+                return;
             } 
             else if (gameGrid[0][2].getText() != " " && gameGrid[0][2].getText() == gameGrid[1][1].getText()
                 && gameGrid[0][2].getText() == gameGrid[2][0].getText()) {
                 endGame();
+                return;
             }
 
             // Change current player
@@ -107,19 +121,31 @@ public class TicTacToe extends JFrame
             {
                 currentPlayer = player;
             }
+
+            // Update the status label
+            gameStatus.setText(currentPlayer + "'s turn");
+
+            // time delay??
         }
     }
 
     public void endGame() 
     {
-        System.out.println(currentPlayer + " wins!");
+        // Update the status label
+        gameStatus.setText(currentPlayer + " wins!");
+
+        // Increment score for winning player
         if (currentPlayer == player)
         {
             playerScore++;
+            gameScores[0].setText(player + ": " + playerScore);
         }
         else 
         {
             computerScore++;
+            gameScores[1].setText(computer + ": " + computerScore);
         }
+
+        // Enable reset button
     }
 }
