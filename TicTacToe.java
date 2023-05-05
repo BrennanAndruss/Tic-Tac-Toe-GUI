@@ -9,8 +9,10 @@ public class TicTacToe extends JFrame
     private JLabel[] gameScores;
     private JButton[][] gameGrid;
     private JLabel gameStatus;
+    private JButton resetBtn;
     private String player, computer, currentPlayer;
     private int playerScore, computerScore;
+    private boolean gameOver;
 
     // Constructor to set up the GUI elements
     public TicTacToe() 
@@ -22,6 +24,7 @@ public class TicTacToe extends JFrame
         player = currentPlayer = "X";
         computer = "O";
         playerScore = computerScore = 0;
+        gameOver = false;
 
         // Creating panels
         JPanel mainPanel = new JPanel();
@@ -53,11 +56,14 @@ public class TicTacToe extends JFrame
                 {
                     public void actionPerformed(ActionEvent e) 
                     {
-                        updateGrid(btn);
+                        if (!gameOver) {
+                            updateGrid(btn);
+                        }
                     }
                 });
 
                 btn.setFont(new Font("Arial", Font.BOLD, 50));
+                btn.setFocusPainted(false);
                 gameGrid[i][j] = btn;
                 grid.add(gameGrid[i][j]);
             }
@@ -66,6 +72,24 @@ public class TicTacToe extends JFrame
         // Setting up the status panel
         gameStatus = new JLabel(currentPlayer + "'s turn", JLabel.CENTER);
         status.add(gameStatus);
+        resetBtn = new JButton("Restart game");
+        resetBtn.addActionListener(new ActionListener()
+        {
+            public void actionPerformed(ActionEvent e)
+            {
+                for (int i = 0; i < 3; i++)
+                {
+                    for (int j = 0; j < 3; j++) {
+                        gameGrid[i][j].setText(" ");
+                    }
+                }
+                resetBtn.setVisible(false);
+                gameStatus.setText(currentPlayer + "'s turn");
+                gameOver = false;
+            }
+        });
+        resetBtn.setVisible(false);
+        status.add(resetBtn);
 
 
         // Setting up the frame
@@ -124,15 +148,14 @@ public class TicTacToe extends JFrame
 
             // Update the status label
             gameStatus.setText(currentPlayer + "'s turn");
-
-            // time delay??
         }
     }
 
     public void endGame() 
     {
-        // Update the status label
+        // Update the status label and game status
         gameStatus.setText(currentPlayer + " wins!");
+        gameOver = true;
 
         // Increment score for winning player
         if (currentPlayer == player)
@@ -147,5 +170,6 @@ public class TicTacToe extends JFrame
         }
 
         // Enable reset button
+        resetBtn.setVisible(true);
     }
 }
